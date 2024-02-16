@@ -1,34 +1,36 @@
-"use client";
-import { FiSun, FiMoon } from "react-icons/fi";
-import { useState, useEffect } from "react";
-import { useTheme } from "next-themes";
-import { FaMoon } from "react-icons/fa";
-import { BsSunFill as BSsunFill } from "react-icons/bs";
-import { IoMoon } from "react-icons/io5";
+'use client'
 
+import { FiSun, FiMoon } from "react-icons/fi"
+import { useState, useEffect } from 'react'
+import { useTheme } from 'next-themes'
+import Image from "next/image"
 
 export default function ThemeSwitch() {
-  const [darkMode, setDarkMode] = useState(true);
+  const [mounted, setMounted] = useState(false)
+  const { setTheme, resolvedTheme } = useTheme()
 
-  useEffect(() => {
-    const theme = localStorage.getItem("theme");
-    if (theme === "dark") setDarkMode(true);
-  }, []);
-  useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
-  }, [darkMode]);
+  useEffect(() =>  setMounted(true), [])
+// This is a custom theme switcher that uses the next-themes package to switch between light and dark mode.
+// This !mounted check is used to prevent the theme switcher from rendering on the server.
 
-  return (
-    <div className="relative w-16 h-8 flex items-center dark:bg-gray-900 bg-teal-400 cursor-pointer rounded-full p-1" onClick={() => setDarkMode(!darkMode)}>
-      <IoMoon className="absolute text-white" size={18} />
-      <div className="absolute bg-white dark:bg-white w-6 h-6 rounded-full shadow-md transform transition-transform duration-300" style={darkMode ? { left: "2px" } : { right: "2px" }}></div>
-      <BSsunFill className="ml-auto  text-yellow-400 " size={18} />
-    </div>
-  );
+  if (!mounted) return (
+    <Image
+      src="data:image/svg+xml;base64,PHN2ZyBzdHJva2U9IiNGRkZGRkYiIGZpbGw9IiNGRkZGRkYiIHN0cm9rZS13aWR0aD0iMCIgdmlld0JveD0iMCAwIDI0IDI0IiBoZWlnaHQ9IjIwMHB4IiB3aWR0aD0iMjAwcHgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjIwIiBoZWlnaHQ9IjIwIiB4PSIyIiB5PSIyIiBmaWxsPSJub25lIiBzdHJva2Utd2lkdGg9IjIiIHJ4PSIyIj48L3JlY3Q+PC9zdmc+Cg=="
+      width={16} //Keep the width and height the same as the icons 
+      height={16}
+      sizes="36x36"
+      alt="Loading Light/Dark Toggle"
+      priority={false}
+      title="Loading Light/Dark Toggle"
+    />
+  )
+
+  if (resolvedTheme === 'dark') {
+    return <FiSun className='text-yellow-400'onClick={() => setTheme('light')} />
+  }
+
+  if (resolvedTheme === 'light') {
+    return <FiMoon className='text-teal-400'onClick={() => setTheme('dark')} />
+  }
+
 }
