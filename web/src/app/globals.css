@@ -2,32 +2,53 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+/* src/components/Navbar.module.css */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 5px;
+  height: 100vh;
+  background: transparent;
+  z-index: 1000;
+  transition: width 0.5s ease;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+.navbarTab {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 5px;
+  height: 50px;
+  background: #333; /* Visible tab area */
+  cursor: pointer;
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+.navMenuVisible {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 250px; /* Width of the navbar when it slides out */
+  background: #fff; /* Background of the sliding navbar */
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+  transition: transform 0.3s ease;
+  transform: translateX(0);
+  padding: 10px;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+.navbar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: none; /* Hide the menu initially */
+}
+
+.navbar li {
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+/* Show the menu when .navMenuVisible is added */
+.navMenuVisible > ul {
+  display: block;
 }
