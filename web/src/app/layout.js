@@ -14,7 +14,12 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} dark:bg-[#0E0E0E]`}>
-        <Providers>{children}</Providers>
+        <Providers>
+          <div className="flex"> 
+            <Navbar />
+            <div className="flex-1">{children}</div> 
+          </div>
+        </Providers>
       </body>
     </html>
   );

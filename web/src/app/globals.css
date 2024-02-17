@@ -1,54 +1,148 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* src/components/Navbar.module.css */
-.navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 5px;
-  height: 100vh;
-  background: transparent;
-  z-index: 1000;
-  transition: width 0.5s ease;
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
 }
 
-.navbarTab {
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
   position: absolute;
-  top: 50%;
-  left: 0;
-  width: 5px;
-  height: 50px;
-  background: #333; /* Visible tab area */
   cursor: pointer;
-}
-
-.navMenuVisible {
-  position: absolute;
   top: 0;
   left: 0;
-  width: 250px; /* Width of the navbar when it slides out */
-  background: #fff; /* Background of the sliding navbar */
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
-  transition: transform 0.3s ease;
-  transform: translateX(0);
-  padding: 10px;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
 }
 
-.navbar ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: none; /* Hide the menu initially */
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
-.navbar li {
-  padding: 10px;
-  border-bottom: 1px solid #ccc;
+.slide-up-char {
+  display: inline-block;
+  animation: slideUp 0.5s ease forwards;
+}
+.delay-0 { /*H*/
+  animation-delay: 0s;
+}
+.delay-1 { /*O*/
+  animation-delay: 0.1s;
+}
+.delay-2 { /*R*/
+  animation-delay: 0.2s;
+}
+.delay-3 { /*I*/
+  animation-delay: 0.3s;
+}
+.delay-4 { /*Z*/
+  animation-delay: 0.4s;
+}
+.delay-5 { /*O*/
+  animation-delay: 0.5s;
+}
+.delay-6 { /*N*/
+  animation-delay: 0.6s;
 }
 
-/* Show the menu when .navMenuVisible is added */
-.navMenuVisible > ul {
-  display: block;
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+.title-container {
+  margin-bottom: 20px; 
+  padding-left: 20px;
+}
+
+.image-container {
+  padding-right: 40px;
+  margin-bottom: 20vh;
+
+}
+.navbar-hover {
+  width: 20px; 
+  height: 100vh;
+  transition: width 0.3s ease-in-out;
+  overflow-x: hidden;
+  position: relative;
+  top: 0;
+  left: 0;
+}
+
+.navbar-hover:hover {
+  width: 100px;
+}
+
+.navbar-icon {
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+  text-align: center; 
+  align-self: center;
+  transform: scale(1);
+}
+
+.navbar-hover:hover .navbar-icon {
+  opacity: 1;
+}
+
+.navbar-icon:hover {
+  transform: scale(1.2);
+  cursor: pointer; 
+}
+
+.navbar-icons-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  padding: 10px 0;
 }
