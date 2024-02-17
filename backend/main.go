@@ -12,7 +12,6 @@ import (
     "backend/pkg/db"
 )
 
-
 func main() {
     client, err := db.ConnectMongoDB()
     if err != nil {
@@ -38,7 +37,8 @@ func main() {
     handler := c.Handler(r)
 
     // Setup your routes
-    r.HandleFunc("/api/users", userHandler.RegisterUser).Methods("POST")
+    r.HandleFunc("/api/register", userHandler.RegisterUser).Methods("POST")
+    r.HandleFunc("/api/login", userHandler.LoginUser).Methods("POST")
 
     // Start the server with the CORS handler
     log.Println("Server is running at http://localhost:8000")
