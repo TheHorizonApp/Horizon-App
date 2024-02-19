@@ -33,7 +33,7 @@ const LoginForm = () => {
       if (!response.ok) {
         throw new Error(data.message || "Failed to login");
       }
-      router.push("/dashboard");
+      router.push("/login");
     } catch (err) {
       console.error("Login error:", err);
       setError(err.message || "An error occurred");
