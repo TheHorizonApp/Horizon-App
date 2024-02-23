@@ -42,7 +42,6 @@ const OnboardingScreen = ({navigation}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef();
 
-
   const renderItem = ({ item, index }) => (
     <View style={[styles.slide, { 
         backgroundColor: color.background,
