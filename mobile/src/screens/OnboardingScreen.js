@@ -12,8 +12,7 @@ import {
 import AnimatedDots from '../components/AnimatedDots'
 import * as Haptics from 'expo-haptics'
 import theme from '../util/theme';
-
-
+import { Entypo } from '@expo/vector-icons';
 
 const { width } = Dimensions.get('window');
 
@@ -23,13 +22,13 @@ const OnboardingScreen = ({navigation}) => {
 
   const onboardingData = [
     {
-      title: 'Organize your Day',
-      description: 'Plan your day with ease, stay on top of your responsibilities.',
+      title: 'Innovate',
+      description: 'Efficiently organize your schedule with our integrated calendar.',
       // image: scheme === 'dark' ? require('../assets/onboarding1dark.png') : require('../assets/onboarding1.png'),
     },
     {
-      title: 'Set Your Goals',
-      description: 'Visualize your ambitions, track your progress effortlessly.',
+      title: 'Collaborate',
+      description: 'Create and share your notes with others.',
       // image: scheme === 'dark' ? require('../assets/onboarding2dark.png') : require('../assets/onboarding2.png'),
     },
     {
@@ -54,28 +53,16 @@ const OnboardingScreen = ({navigation}) => {
       <Text style={[styles.description, {color: color.text}]}> 
         {item.description}
       </Text>
-      <AnimatedDots activeIndex={currentIndex} count={onboardingData.length} />
-      <TouchableOpacity
-        style={[styles.button, {backgroundColor: color.button}]}
-        onPress={() => {
-          if (currentIndex < onboardingData.length - 1) {
-            flatListRef.current.scrollToIndex({ index: currentIndex + 1 });
-          }else{
-            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-            navigation.navigate("RegisterScreen")
-          }
-        }}
-      >
-        <Text style={[styles.buttonText, {color: color.buttonText}]}>
-          {currentIndex === onboardingData.length - 1 ? 'Get Started' : 'Next'}
-        </Text>
-      </TouchableOpacity>
+     
     </View>
   );
 
 
   return (
     <View style={[styles.container,{backgroundColor: color.background}]}>
+      <TouchableOpacity style = {{flexDirection: 'row-reverse', marginTop: '15%', right: 30,}} onPress = {() => {navigation.navigate("RegisterScreen")}}>
+        <Text style = {{color: 'gray', fontWeight: 'bold', fontSize: 26,}}>Skip</Text>
+      </TouchableOpacity>
       <FlatList
         data={onboardingData}
         renderItem={renderItem}
@@ -89,6 +76,26 @@ const OnboardingScreen = ({navigation}) => {
         }}        
         ref={flatListRef}
       />
+       <View style = {{bottom: 50, width: '95%', alignItems:'center', justifyContent: 'space-between', flexDirection: 'row'}}>
+      <AnimatedDots activeIndex={currentIndex} count={onboardingData.length} />
+      <TouchableOpacity
+        
+        onPress={() => {
+          if (currentIndex < onboardingData.length - 1) {
+            flatListRef.current.scrollToIndex({ index: currentIndex + 1 });
+          }else{
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+            navigation.navigate("RegisterScreen")
+          }
+        }}
+        
+      >
+        <Entypo 
+          name="chevron-with-circle-right" 
+          size={50} 
+          color={color.text} />
+      </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -98,8 +105,6 @@ export default OnboardingScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     width: '100%', 
     margin: 0,
     padding: 0, 
@@ -107,7 +112,6 @@ const styles = StyleSheet.create({
   },
   slide: {
     justifyContent: 'center',
-    alignItems: 'center',
     width: '100%',
     flex: 1,
   },
@@ -122,10 +126,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     bottom: 50,
     marginTop: 20,
+    marginHorizontal: 20,
+
   },
   description: {
     fontSize: 14,
-    textAlign: 'center',
     marginHorizontal: 20,
     bottom: 40,
     width: '85%',
