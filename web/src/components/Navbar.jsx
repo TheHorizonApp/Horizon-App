@@ -2,7 +2,7 @@
 import React from "react";
 import { FaHome, FaSearch, FaCalendarAlt, FaFileAlt, FaUser, FaCog } from "react-icons/fa";
 import { usePathname } from "next/navigation";
-import Link from "next/link"; // Corrected import
+import Link from "next/link";
 
 function Navbar() {
   const pathname = usePathname();
@@ -36,11 +36,8 @@ function Navbar() {
 
 function NavbarIcon({ icon, visible, href }) {
   const iconClasses = `navbar-icon dark:text-white text-black ${visible ? "navbar-icon-visible" : ""}`;
-
-  return (
-    <Link href={href}className={iconClasses}>{icon}
-    </Link>
-  );
+  return <Link href={href}className={iconClasses}>{icon}</Link>
+  ;
 }
 
 export default Navbar;
