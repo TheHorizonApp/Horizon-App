@@ -1,5 +1,4 @@
 "use client";
-import { redirect } from "next/dist/server/api-utils";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
@@ -12,9 +11,6 @@ const LoginForm = () => {
 
   const isLoggedIn = () => {
     const token = localStorage.getItem("token");
-    console.log("Token was here");
-    console.log(token);
-    console.log(!!token);
     return !!token;
   };
 
@@ -76,12 +72,12 @@ const LoginForm = () => {
             htmlFor="email"
             className="text-lg font-medium text-black dark:text-white p-2"
           >
-            Email
+            Username or email
           </label>
           <input
             id="email"
             type="email"
-            placeholder="Email"
+            placeholder="Username or email"
             required
             className="w-full px-4 py-3 rounded-lg text-md mt-1 bg-[#EAEAEA] dark:bg-[#212121] text-[#7C7C7C]"
             value={email} // Bind state to input

@@ -1,15 +1,17 @@
 package main
 
 import (
-    "context"
-    "log"
-    "net/http"
-    "github.com/gorilla/mux"
-    "github.com/rs/cors"
-    "backend/internal/handler"
-    "backend/internal/repository"
-    "backend/internal/service"
-    "backend/pkg/db"
+	"backend/internal/handler"
+	"backend/internal/repository"
+	"backend/internal/service"
+	"backend/pkg/db"
+	"context"
+	"fmt"
+	"log"
+	"net/http"
+
+	"github.com/gorilla/mux"
+	"github.com/rs/cors"
 )
 
 func main() {
@@ -38,6 +40,7 @@ func main() {
 
     // Setup your routes
     r.HandleFunc("/api/register", userHandler.RegisterUser).Methods("POST")
+    fmt.Println("Main Registering user")
     r.HandleFunc("/api/login", userHandler.LoginUser).Methods("POST")
 
     // Start the server with the CORS handler

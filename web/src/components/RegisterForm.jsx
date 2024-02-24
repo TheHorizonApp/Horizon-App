@@ -1,10 +1,10 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-const LoginForm = () => {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+const RegisterForm = () => {
+  const [username, setUsername] = useState("");
+  const [nickname, setNickname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [comPass, setComPass] = useState(false);
@@ -12,18 +12,29 @@ const LoginForm = () => {
   const [error, setError] = useState("");
   const router = useRouter();
 
+  const isLoggedIn = () => {
+    // TODO: Check if the user token is valid in backend
+    const token = localStorage.getItem("token");
+    return !!token;
+  };
+
+  useEffect(() => {
+    if (isLoggedIn()) {
+      router.push("/dashboard");
+    }
+  }, []);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setIsLoading(true);
     setError("");
-
     try {
-      console.log(email);
-      console.log(password);
       const response = await fetch("http://localhost:8000/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          username: username,
+          nickname: nickname,
           email: email,
           password: password,
         }),
@@ -50,32 +61,31 @@ const LoginForm = () => {
       <div className="w-full space-y-3">
         <div>
           <div className="flex place-content-between gap-4">
-            <div >
+            <div>
               <label className="text-lg font-medium text-black dark:text-white p-2">
-                First Name
+                Username
               </label>
               <input
-                id="firstName"
+                id="Username"
                 type="text"
-                placeholder="First Name"
+                placeholder="Username"
                 required
-                className="w-full px-4 py-3 rounded-lg text-md bg-[#EAEAEA] dark:bg-[#212121] text-black"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
+                className="w-full px-4 py-3 rounded-lg text-md bg-[#EAEAEA] dark:bg-[#212121] text-black dark:text-white p-2"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
               />
             </div>
             <div>
               <label className="text-lg font-medium text-black dark:text-white p-2">
-                Last Name
+                Nickname
               </label>
               <input
-                id="lastName"
+                id="nickname"
                 type="text"
-                placeholder="Last Name"
-                required
-                className="w-full px-4 py-3 rounded-lg text-md bg-[#EAEAEA] dark:bg-[#212121] text-black"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
+                placeholder="Nickname (Optional)"
+                className="w-full px-4 py-3 rounded-lg text-md bg-[#EAEAEA] dark:bg-[#212121] text-black dark:text-white p-2"
+                value={nickname}
+                onChange={(e) => setNickname(e.target.value)}
               />
             </div>
           </div>
@@ -92,7 +102,7 @@ const LoginForm = () => {
             type="email"
             placeholder="Email"
             required
-            className="w-full px-4 py-3 rounded-lg text-md mt-1 bg-[#EAEAEA] dark:bg-[#212121] text-[#7C7C7C]"
+            className="w-full px-4 py-3 rounded-lg text-md mt-1 bg-[#EAEAEA] dark:bg-[#212121] text-black dark:text-white p-2 "
             value={email} // Bind state to input
             onChange={(e) => setEmail(e.target.value)} // Update state on change
           />
@@ -109,14 +119,14 @@ const LoginForm = () => {
             type="password"
             placeholder="Password"
             required
-            className="w-full px-4 py-3 rounded-lg text-md mt-1 bg-[#EAEAEA] dark:bg-[#212121] text-[#7C7C7C]"
+            className="w-full px-4 py-3 rounded-lg text-md mt-1 bg-[#EAEAEA] dark:bg-[#212121] text-black dark:text-white"
             value={password} // Bind state to input
             onChange={(e) => setPassword(e.target.value)} // Update state on change
           />
         </div>
         <div>
           <label
-            htmlFor="password"
+            htmlFor="conPassword"
             className="text-lg font-medium text-black dark:text-white p-2"
           >
             Confirm Password
@@ -126,7 +136,7 @@ const LoginForm = () => {
             type="password"
             placeholder="Confirm Password"
             required
-            className="w-full px-4 py-3 rounded-lg text-md mt-1 bg-[#EAEAEA] dark:bg-[#212121] text-[#7C7C7C]"
+            className="w-full px-4 py-3 rounded-lg text-md mt-1 bg-[#EAEAEA] dark:bg-[#212121]  text-black dark:text-white"
             onChange={(e) => setComPass(comPass === false ? true : false)}
           />
         </div>
@@ -143,4 +153,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
+export default RegisterForm;
