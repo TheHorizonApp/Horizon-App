@@ -1,16 +1,10 @@
-"use client";
+"use client"
 import React from "react";
-import {
-  FaHome,
-  FaSearch,
-  FaCalendarAlt,
-  FaFileAlt,
-  FaUser,
-  FaCog,
-} from "react-icons/fa";
+import { FaHome, FaSearch, FaCalendarAlt, FaFileAlt, FaUser, FaCog } from "react-icons/fa";
 import { usePathname } from "next/navigation";
+import Link from "next/link"; // Corrected import
 
-function Navbar({ darkMode }) {
+function Navbar() {
   const pathname = usePathname();
   const shouldHideNavbar = pathname === "/" || pathname === "/login" || pathname === "/register";
   const pin = pathname === "/dashboard";
@@ -25,26 +19,28 @@ function Navbar({ darkMode }) {
     <div className={navbarClasses}>
       <div className="navbar-icons-container">
         <div className="flex flex-col items-center space-y-10 my-20">
-          {/* Pass `pin` to each NavbarIcon component */}
-          <NavbarIcon icon={<FaHome size="24" />} visible={pin} />
-          <NavbarIcon icon={<FaSearch size="24" />} visible={pin} />
-          <NavbarIcon icon={<FaCalendarAlt size="24" />} visible={pin} />
-          <NavbarIcon icon={<FaFileAlt size="24" />} visible={pin} />
-          <NavbarIcon icon={<FaUser size="24" />} visible={pin} />
+          <NavbarIcon icon={<FaHome size="24" />} visible={pin} href="/dashboard" />
+          <NavbarIcon icon={<FaSearch size="24" />} visible={pin} href="/search" />
+          <NavbarIcon icon={<FaCalendarAlt size="24" />} visible={pin} href="/calendar" />
+          <NavbarIcon icon={<FaFileAlt size="24" />} visible={pin} href="/notes" />
+          <NavbarIcon icon={<FaUser size="24" />} visible={pin} href="/profile" />
         </div>
 
         <div className="flex items-center justify-center mb-10">
-          <NavbarIcon icon={<FaCog size="24" />} visible={pin} darkMode={darkMode} />
+          <NavbarIcon icon={<FaCog size="24" />} visible={pin} href="/settings" />
         </div>
       </div>
     </div>
   );
 }
 
-function NavbarIcon({ icon, visible, darkMode }) {
+function NavbarIcon({ icon, visible, href }) {
   const iconClasses = `navbar-icon dark:text-white text-black ${visible ? "navbar-icon-visible" : ""}`;
 
-  return <div className={iconClasses}>{icon}</div>;
+  return (
+    <Link href={href}className={iconClasses}>{icon}
+    </Link>
+  );
 }
 
 export default Navbar;
