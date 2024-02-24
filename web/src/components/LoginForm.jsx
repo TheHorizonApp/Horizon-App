@@ -1,6 +1,6 @@
 "use client";
 import { redirect } from "next/dist/server/api-utils";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 const LoginForm = () => {
@@ -9,6 +9,20 @@ const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
+
+  const isLoggedIn = () => {
+    const token = localStorage.getItem("token");
+    console.log("Token was here");
+    console.log(token);
+    console.log(!!token);
+    return !!token;
+  };
+
+  useEffect(() => {
+    if (isLoggedIn()) {
+      router.push("/dashboard");
+    }
+  }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -34,6 +48,7 @@ const LoginForm = () => {
       if (!response.ok) {
         throw new Error(data.message || "Failed to login");
       }
+      localStorage.setItem("token", data.token);
       router.push("/dashboard");
     } catch (err) {
       console.error("Login error:", err);
@@ -99,7 +114,6 @@ const LoginForm = () => {
         {isLoading ? "Signing in..." : "Sign in"}
       </button>
       {error && <div className="text-red-500">{error}</div>}
-
     </form>
   );
 };
