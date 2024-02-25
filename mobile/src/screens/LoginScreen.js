@@ -23,7 +23,7 @@ const LoginScreen = ({ navigation }) => {
   const [errorMessage, setErrorMessage] = useState("");
 
   const SecureLogin = () => {
-    fetch("http://172.20.10.3:8000/api/login", {
+    fetch("http://172.16.21.86:8000/api/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -96,7 +96,7 @@ const LoginScreen = ({ navigation }) => {
         </Text>
       </TouchableOpacity> */}
 
-      <TouchableOpacity onPress={handleGoToRegister}>
+      <TouchableOpacity style = {{marginTop: '10%'}} onPress={handleGoToRegister}>
         <Text style={[styles.registerText]}>
           Don't have an account?{" "}
           <Text style={[styles.registerHereText, { color: color.text }]}>

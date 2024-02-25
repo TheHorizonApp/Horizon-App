@@ -23,7 +23,7 @@ const RegisterScreen = ({ navigation }) => {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const SecureSignup = () => {
-    fetch("http://172.20.10.3:8000/api/register", {
+    fetch("http://172.16.21.86:8000/api/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -35,13 +35,15 @@ const RegisterScreen = ({ navigation }) => {
     })
       .then((response) => {
         if (response.ok) {
+          console.log("response", response)
           return response.json();
         } else {
           throw new Error("Failed to register. Please try again.");
         }
       })
       .then((data) => {
-        navigation.navigate("HomeScreen", { userEmail: data.email });
+        console.log("data", data)
+        navigation.navigate("GetInformation", { userEmail: data.email });
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -72,7 +74,7 @@ const RegisterScreen = ({ navigation }) => {
         <Text style={[styles.helloText, { color: color.text }]}>Hello</Text>
         <Text style={styles.thereText}>there!</Text>
         <Text style={[styles.introText, { color: color.text }]}>
-          Let's get our life together.
+          Sign up and stay on track.
         </Text>
       </View>
 
@@ -115,7 +117,7 @@ const RegisterScreen = ({ navigation }) => {
       <TouchableOpacity onPress={handleGoToLogin}>
         <Text style={styles.loginText}>
           Already have an account?{" "}
-          <Text style={[styles.loginHereText, { color: "white" }]}>
+          <Text style={[styles.loginHereText, { color: color.text }]}>
             Login here
           </Text>
         </Text>
