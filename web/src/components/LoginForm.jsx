@@ -49,8 +49,8 @@ const LoginForm = () => {
       className="flex flex-col items-center justify-center space-y-5"
     >
       <div>
-        <div className="border-t border-gray-300 my-4"></div>
-        <div className="pt-5">
+        {/* <hr className="border-t border-gray-300 my-4" /> */}
+        <div className="">
           <label
             htmlFor="email"
             className="text-lg font-medium text-black dark:text-white p-2"

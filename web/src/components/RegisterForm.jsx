@@ -132,7 +132,7 @@ const RegisterForm = () => {
       <button
         type="submit"
         disabled={isLoading}
-        className="bg-black text-white dark:bg-white dark:text-black p-2 px-8 rounded-lg mt-4 text-lg"
+        className="bg-black text-white dark:bg-white dark:text-black p-2 px-8 rounded-lg m-4 text-lg"
       >
         {isLoading ? "Register" : "Register"}
       </button>
