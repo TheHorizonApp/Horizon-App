@@ -33,8 +33,16 @@ func (svc *UserService) AuthenticateUser(ctx context.Context, email, password st
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil {
-		return model.User{}, err // Password does not match
+		return model.User{}, err
 	}
 
 	return user, nil
+}
+
+func (svc *UserService) UpdateUsername(ctx context.Context, email, username string) error {
+	return svc.repo.UpdateUsername(ctx, email, username)
+}
+
+func (s *UserService) GetUserByEmail(ctx context.Context, email string) (model.User, error) {
+	return s.repo.FindByEmail(ctx, email)
 }
