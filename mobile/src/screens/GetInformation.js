@@ -13,13 +13,66 @@ import theme from "../util/theme";
 import Check from "../assets/username-check.json";
 import { AntDesign } from "@expo/vector-icons";
 import LottieView from "lottie-react-native";
+import Toast from "react-native-toast-message";
 
 const GetInformation = ({ navigation, route }) => {
   const { userEmail } = route.params;
-  console.log("user email", userEmail);
   const scheme = useColorScheme();
   const color = theme(scheme);
   const [username, setUsername] = useState("");
+
+  const updateUsername = async () => {
+    if (!username.trim()) {
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Please enter a username.",
+      });
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        "http://10.84.90.79:8000/api/user/update-username",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: userEmail,
+            username: username,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        Toast.show({
+          type: "success",
+          text1: "Success",
+          text2: "Username updated successfully.",
+          position: "bottom",
+        });
+        navigation.navigate("HomeDrawer", { userEmail });
+      } else {
+        Toast.show({
+          type: "error",
+          text1: "Error",
+          text2: data.message || "Failed to update username.",
+          position: "bottom",
+        });
+      }
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "An error occurred while updating the username.",
+        position: "bottom"
+      });
+    }
+  };
 
   return (
     <KeyboardAvoidingView
@@ -52,12 +105,11 @@ const GetInformation = ({ navigation, route }) => {
         )}
       </View>
       <View style={styles.footer}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate("HomeScreen", { userEmail })}
-        >
+        <TouchableOpacity onPress={updateUsername}>
           <AntDesign name="arrowright" size={32} color={color.text} />
         </TouchableOpacity>
       </View>
+      <Toast />
     </KeyboardAvoidingView>
   );
 };
@@ -89,12 +141,22 @@ const styles = StyleSheet.create({
   },
   usernameInputRow: {
     flexDirection: "row",
+    alignItems: "center", 
     justifyContent: "space-between",
+    width: "100%", 
   },
+
+  input: {
+    flex: 1, 
+    marginRight: 10,
+    marginTop: "10%",
+    fontSize: 24,
+  },
+
   lottie: {
     width: 50,
     height: 50,
-    marginTop: "10%",
-    alignSelf: "auto",
+    marginTop: '10%'
   },
+
 });

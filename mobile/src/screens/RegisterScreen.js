@@ -13,7 +13,7 @@ import theme from "../util/theme";
 import { Header } from "react-native-elements";
 import { Entypo } from "@expo/vector-icons";
 import Toast from "react-native-toast-message";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const RegisterScreen = ({ navigation }) => {
   const scheme = useColorScheme();
   const color = theme(scheme);
@@ -23,7 +23,7 @@ const RegisterScreen = ({ navigation }) => {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const SecureSignup = () => {
-    fetch("http://172.16.21.86:8000/api/register", {
+    fetch("http://10.84.90.79:8000/api/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -35,14 +35,17 @@ const RegisterScreen = ({ navigation }) => {
     })
       .then((response) => {
         if (response.ok) {
-          console.log("response", response)
+          console.log("response", response);
           return response.json();
         } else {
           throw new Error("Failed to register. Please try again.");
         }
       })
       .then((data) => {
-        console.log("data", data)
+        console.log("data", data);
+        // Assuming the API response includes a token and email field
+        AsyncStorage.setItem("userToken", data.token); // Store the token
+        AsyncStorage.setItem("userEmail", data.email); // Store the email
         navigation.navigate("GetInformation", { userEmail: data.email });
       })
       .catch((error) => {
@@ -63,8 +66,8 @@ const RegisterScreen = ({ navigation }) => {
   };
 
   const handleGoToLogin = () => {
-    navigation.navigate("LoginScreen")
-  }
+    navigation.navigate("LoginScreen");
+  };
   return (
     <KeyboardAvoidingView
       style={[styles.container, { backgroundColor: color.background }]}

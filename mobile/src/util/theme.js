@@ -15,7 +15,7 @@ const lightTheme = {
   };
   
   const darkTheme = {
-    background: "black",
+    background: "#1A1A1A",
     text: "white",
     activeDot: "white",
     button: "white",

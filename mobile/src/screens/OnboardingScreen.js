@@ -14,6 +14,10 @@ import * as Haptics from "expo-haptics";
 import theme from "../util/theme";
 import { Entypo } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import LottieView from "lottie-react-native";
+import Onboarding1 from "../assets/onboarding1.json";
+import Onboarding2 from "../assets/onboarding2.json";
+import Onboarding3 from "../assets/onboarding3.json";
 
 const { width } = Dimensions.get("window");
 
@@ -23,21 +27,20 @@ const OnboardingScreen = ({ navigation }) => {
 
   const onboardingData = [
     {
-      title: "Innovate",
+      title: "Here, we get work done.",
       description:
         "Efficiently organize your schedule with our integrated calendar.",
-      // image: scheme === 'dark' ? require('../assets/onboarding1dark.png') : require('../assets/onboarding1.png'),
+      animation: Onboarding1,
     },
     {
-      title: "Collaborate",
+      title: "Collaborate with Others",
       description: "Create and share your notes with others.",
-      // image: scheme === 'dark' ? require('../assets/onboarding2dark.png') : require('../assets/onboarding2.png'),
+      animation: Onboarding2,
     },
     {
-      title: "Motivate",
-      description:
-        "See friends' goals and schedules, inspire and celebrate achievements together.",
-      // image: scheme === 'dark' ? require('../assets/onboarding3dark.png') : require('../assets/onboarding3.png'),
+      title: "Stay Organized",
+      description: "Set and get reminded on upcoming deadlines.",
+      animation: Onboarding3,
     },
   ];
 
@@ -49,9 +52,9 @@ const OnboardingScreen = ({ navigation }) => {
     try {
       const userToken = await AsyncStorage.getItem("userToken");
       if (userToken) {
-        navigation.navigate("HomeDrawer", { userToken: userToken});
+        navigation.navigate("HomeDrawer", { userToken: userToken });
       } else {
-        navigation.navigate("OnboardingScreen")
+        navigation.navigate("OnboardingScreen");
       }
     } catch (error) {
       console.error("AsyncStorage error:", error);
@@ -60,7 +63,6 @@ const OnboardingScreen = ({ navigation }) => {
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef();
-
   const renderItem = ({ item, index }) => (
     <View
       style={[
@@ -71,14 +73,18 @@ const OnboardingScreen = ({ navigation }) => {
         },
       ]}
     >
-      {/* <Image source={item.image} style={[styles.image]}/> */}
       <Text style={[styles.title, { color: color.text }]}>{item.title}</Text>
       <Text style={[styles.description, { color: color.text }]}>
         {item.description}
       </Text>
+      <LottieView
+        autoPlay
+        loop={true}
+        style={index === 1 ? styles.lottieLarge : styles.lottie}
+        source={item.animation}
+      />
     </View>
   );
-
   return (
     <View style={[styles.container, { backgroundColor: color.background }]}>
       <TouchableOpacity
@@ -87,7 +93,7 @@ const OnboardingScreen = ({ navigation }) => {
           navigation.navigate("RegisterScreen");
         }}
       >
-        <Text style={{ color: "gray", fontWeight: "bold", fontSize: 26 }}>
+        <Text style={{ color: "gray", fontWeight: "400", fontSize: 16 }}>
           Skip
         </Text>
       </TouchableOpacity>
@@ -153,7 +159,6 @@ const styles = StyleSheet.create({
     padding: 0,
   },
   slide: {
-    justifyContent: "center",
     width: "100%",
     flex: 1,
   },
@@ -164,11 +169,12 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
   },
   title: {
-    fontSize: 24,
+    fontSize: 42,
     fontWeight: "bold",
     bottom: 50,
-    marginTop: 20,
+    marginTop: "25%",
     marginHorizontal: 20,
+    width: "80%",
   },
   description: {
     fontSize: 14,
@@ -190,5 +196,15 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     textAlign: "center",
+  },
+  lottie: {
+    alignSelf: "center",
+    width: 500,
+    height: 500,
+  },
+  lottieLarge: {
+    alignSelf: "center",
+    width: 650, 
+    height: 500, 
   },
 });

@@ -30,7 +30,9 @@ func (h *UserHandler) RegisterUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode("User created successfully")
+	json.NewEncoder(w).Encode((map[string]string{
+		"email": user.Email,
+	}))
 }
 
 type Claims struct {
@@ -82,5 +84,45 @@ func (h *UserHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]string{
 		"token": token,
 		"email": user.Email,
+	})
+}
+
+func (h *UserHandler) UpdateUsername(w http.ResponseWriter, r *http.Request) {
+	var data struct {
+		Email    string `json:"email"`
+		Username string `json:"username"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	if err := h.svc.UpdateUsername(r.Context(), data.Email, data.Username); err != nil {
+		http.Error(w, "Failed to update username", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]string{
+		"message": "Username updated successfully",
+	})
+}
+
+func (h *UserHandler) GetUsernameByEmail(w http.ResponseWriter, r *http.Request) {
+	email := r.URL.Query().Get("email")
+	if email == "" {
+		http.Error(w, "Email query parameter is missing", http.StatusBadRequest)
+		return
+	}
+
+	user, err := h.svc.GetUserByEmail(r.Context(), email)
+	if err != nil {
+		http.Error(w, "User not found", http.StatusNotFound)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json") 
+	json.NewEncoder(w).Encode(map[string]string{
+		"username": user.Username,
 	})
 }

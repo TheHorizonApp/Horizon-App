@@ -23,7 +23,7 @@ const LoginScreen = ({ navigation }) => {
   const [errorMessage, setErrorMessage] = useState("");
 
   const SecureLogin = () => {
-    fetch("http://172.16.21.86:8000/api/login", {
+    fetch("http://10.84.90.79:8000/api/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -37,10 +37,13 @@ const LoginScreen = ({ navigation }) => {
         if (!response.ok) throw new Error("Login failed");
         return response.json();
       })
-      .then((data) => {
+      .then(async (data) => {
         console.log("Success:", data);
-        AsyncStorage.setItem("userToken", data.token);
-        navigation.navigate("HomeScreen", { userEmail: data.email });
+        // Storing user token
+        await AsyncStorage.setItem("userToken", data.token);
+        // Additionally, store the user's email
+        await AsyncStorage.setItem("userEmail", email);
+        navigation.navigate("HomeDrawer", { userEmail: email });
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -49,9 +52,9 @@ const LoginScreen = ({ navigation }) => {
   };
 
   const handleGoToRegister = () => {
-    navigation.navigate("RegisterScreen")
-  }
- 
+    navigation.navigate("RegisterScreen");
+  };
+
   return (
     <KeyboardAvoidingView
       style={[styles.container, { backgroundColor: color.background }]}
@@ -96,7 +99,10 @@ const LoginScreen = ({ navigation }) => {
         </Text>
       </TouchableOpacity> */}
 
-      <TouchableOpacity style = {{marginTop: '10%'}} onPress={handleGoToRegister}>
+      <TouchableOpacity
+        style={{ marginTop: "10%" }}
+        onPress={handleGoToRegister}
+      >
         <Text style={[styles.registerText]}>
           Don't have an account?{" "}
           <Text style={[styles.registerHereText, { color: color.text }]}>
