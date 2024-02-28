@@ -37,7 +37,7 @@ const HomeScreen = ({ navigation, route }) => {
     const fetchUsername = async () => {
       const email = await AsyncStorage.getItem("userEmail");
       if (email) {
-        fetch(`http://10.84.90.79:8000/api/user/username?email=${email}`)
+        fetch(`http://172.16.21.86:8000/api/user/username?email=${email}`)
           .then((response) => response.text())
           .then((text) => {
             return JSON.parse(text);
@@ -99,13 +99,13 @@ const HomeScreen = ({ navigation, route }) => {
           {/* <Text style={[styles.name, { color: "gray" }]}>{timeOfDay}!</Text> */}
         </View>
       </View>
-      {/* <DateList onDateSelect={(date) => setSelectedDate(date)} /> */}
-      {/* <TouchableOpacity
+      <DateList onDateSelect={(date) => setSelectedDate(date)} />
+      <TouchableOpacity
         style={{ justifyContent: "center", alignItems: "center", flex: 0.5 }}
         onPress={signOut}
       >
         <Text>Sign Out</Text>
-      </TouchableOpacity> */}
+      </TouchableOpacity>
       <GroupList />
     </KeyboardAvoidingView>
   );

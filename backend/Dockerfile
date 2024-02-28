@@ -29,5 +29,9 @@ COPY --from=builder /app/main .
 # Expose port 8000 to the outside world
 EXPOSE 8000
 
+# Set an environment variable for the MongoDB URL
+# This is the default value and can be overridden by docker-compose.yml or when starting the container
+ENV MONGO_URL=mongodb://localhost:27017/horizon
+
 # Command to run the executable
 CMD ["./main"]

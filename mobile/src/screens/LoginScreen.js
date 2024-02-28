@@ -23,7 +23,7 @@ const LoginScreen = ({ navigation }) => {
   const [errorMessage, setErrorMessage] = useState("");
 
   const SecureLogin = () => {
-    fetch("http://10.84.90.79:8000/api/login", {
+    fetch("http://172.16.21.86:8000/api/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

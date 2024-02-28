@@ -33,7 +33,7 @@ const GetInformation = ({ navigation, route }) => {
 
     try {
       const response = await fetch(
-        "http://10.84.90.79:8000/api/user/update-username",
+        "http://172.16.21.86:8000/api/user/update-username",
         {
           method: "POST",
           headers: {

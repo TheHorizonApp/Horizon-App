@@ -23,7 +23,7 @@ const RegisterScreen = ({ navigation }) => {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const SecureSignup = () => {
-    fetch("http://10.84.90.79:8000/api/register", {
+    fetch("http://172.16.21.86:8000/api/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

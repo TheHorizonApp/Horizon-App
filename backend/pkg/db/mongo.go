@@ -1,15 +1,23 @@
 package db
 
 import (
-    "context"
-    "time"
-    "go.mongodb.org/mongo-driver/mongo"
-    "go.mongodb.org/mongo-driver/mongo/options"
+	"context"
+	"os"
+	"time"
+
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // ConnectMongoDB initializes a MongoDB client and connects to the database
 func ConnectMongoDB() (*mongo.Client, error) {
-    clientOptions := options.Client().ApplyURI("mongodb://localhost:27017") // Adjust the URI as needed
+    // Get MONGO_URL environment variable, default to "mongodb://localhost:27017" if not set
+    mongoURI := os.Getenv("MONGO_URL")
+    if mongoURI == "" {
+        mongoURI = "mongodb://localhost:27017"
+    }
+
+    clientOptions := options.Client().ApplyURI(mongoURI)
     ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
     defer cancel()
     client, err := mongo.Connect(ctx, clientOptions)
