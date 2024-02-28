@@ -9,18 +9,24 @@ import GetInformation from "./src/screens/GetInformation";
 import Settings from "./src/screens/Settings";
 import { View, Text, useColorScheme } from "react-native";
 import theme from "./src/util/theme";
-import { MaterialIcons } from '@expo/vector-icons'
+import { MaterialIcons } from "@expo/vector-icons";
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 
 function DrawerNavigator() {
-
   const scheme = useColorScheme();
-  const color = theme(scheme)
+  const color = theme(scheme);
 
   return (
-    <Drawer.Navigator initialRouteName="HomeScreen" screenOptions={{}}>
+    <Drawer.Navigator
+      initialRouteName="HomeScreen"
+      screenOptions={{
+        drawerStyle: {
+          backgroundColor: color.background,
+        },
+      }}
+    >
       <Drawer.Screen
         options={{
           headerShown: false,

@@ -10,9 +10,11 @@ import {
 import React, { useState, useEffect } from "react";
 import theme from "../util/theme";
 import { Header } from "react-native-elements";
-import { Entypo, Octicons } from "@expo/vector-icons";
+import { Entypo, FontAwesome5 } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import DateList from "../components/DateList";
+import GroupList from "../components/GroupList";
 
 const HomeScreen = ({ navigation, route }) => {
   const signOut = async () => {
@@ -23,15 +25,21 @@ const HomeScreen = ({ navigation, route }) => {
       return false;
     }
   };
-
+  const [selectedDate, setSelectedDate] = useState(formatDate(new Date()));
+  function formatDate(date) {
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = ("0" + (d.getMonth() + 1)).slice(-2);
+    const day = ("0" + d.getDate()).slice(-2);
+    return `${year}-${month}-${day}`;
+  }
   useEffect(() => {
     const fetchUsername = async () => {
       const email = await AsyncStorage.getItem("userEmail");
       if (email) {
-        fetch(`http://10.84.90.79:8080/api/user/username?email=${email}`)
-          .then((response) => response.text()) 
+        fetch(`http://10.84.90.79:8000/api/user/username?email=${email}`)
+          .then((response) => response.text())
           .then((text) => {
-            console.log("Raw response:", text);
             return JSON.parse(text);
           })
           .then((data) => {
@@ -50,7 +58,7 @@ const HomeScreen = ({ navigation, route }) => {
   const color = theme(scheme);
   const [timeOfDay, setTimeOfDay] = useState("");
   const [username, setUsername] = useState("");
-  
+
   useEffect(() => {
     const hour = new Date().getHours();
     setTimeOfDay(
@@ -67,16 +75,20 @@ const HomeScreen = ({ navigation, route }) => {
         leftComponent={
           <TouchableOpacity
             onPress={() => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
               navigation.toggleDrawer();
             }}
           >
-            <Octicons name="three-bars" size={26} color={color.text} />
+            <Entypo name="menu" size={26} color={color.text} />
           </TouchableOpacity>
         }
+        rightComponent={
+          <TouchableOpacity style = {{right: 5}}>
+        <FontAwesome5 name="user-circle" size={32} color={color.text} />
+        </TouchableOpacity>
+        }
         containerStyle={{
-          backgroundColor: "transparent", // To match the LinearGradient
-          borderBottomWidth: 0, // Remove default border at the bottom
+          backgroundColor: "transparent",
+          borderBottomWidth: 0,
         }}
       />
       <View style={styles.header}>
@@ -84,19 +96,17 @@ const HomeScreen = ({ navigation, route }) => {
           <Text style={[styles.greeting, { color: color.text }]}>
             Hello {username}
           </Text>
-          <Text style={[styles.name, { color: "gray" }]}>{timeOfDay}!</Text>
+          {/* <Text style={[styles.name, { color: "gray" }]}>{timeOfDay}!</Text> */}
         </View>
       </View>
-      <TouchableOpacity
-        style={{
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "white",
-        }}
+      {/* <DateList onDateSelect={(date) => setSelectedDate(date)} /> */}
+      {/* <TouchableOpacity
+        style={{ justifyContent: "center", alignItems: "center", flex: 0.5 }}
         onPress={signOut}
       >
         <Text>Sign Out</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
+      <GroupList />
     </KeyboardAvoidingView>
   );
 };
@@ -111,7 +121,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginTop: "10%",
     padding: 20,
   },
   textContainer: {
@@ -119,7 +128,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   greeting: {
-    fontSize: 26,
+    fontSize: 32,
     fontWeight: "400",
   },
   name: {
