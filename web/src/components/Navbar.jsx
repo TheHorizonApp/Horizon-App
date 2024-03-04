@@ -29,7 +29,9 @@ function Navbar() {
   return (
     <div className={navbarClasses}>
       <div className="navbar-icons-container">
-        <h1 className="text-center py-4 font-semibold">Horizon</h1>
+        <h1 className="text-center py-4 font-semibold " visible={pin}>
+          Horizon
+        </h1>
         <div className="flex flex-col items-center space-y-10 my-10">
           <NavbarIcon
             icon={<FaHome size="24" />}
@@ -56,7 +58,8 @@ function Navbar() {
             visible={pin}
             href="/profile"
           />
-          <ThemeSwitch />
+
+          <NavbarIcon icon={<ThemeSwitch size="24" />} visible={pin} />
         </div>
         <div className="flex items-center justify-center mb-10">
           <NavbarIcon
@@ -74,10 +77,12 @@ function NavbarIcon({ icon, visible, href }) {
   const iconClasses = `navbar-icon dark:text-white text-black ${
     visible ? "navbar-icon-visible" : ""
   }`;
-  return (
+  return href ? (
     <Link href={href} className={iconClasses}>
       {icon}
     </Link>
+  ) : (
+    <div lassName={iconClasses}>{icon}</div>
   );
 }
 
