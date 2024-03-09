@@ -11,6 +11,7 @@ import {
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import ThemeSwitch from "./ThemeSwitch";
+import "./Navbar.css";
 
 function Navbar() {
   const pathname = usePathname();
@@ -29,9 +30,7 @@ function Navbar() {
   return (
     <div className={navbarClasses}>
       <div className="navbar-icons-container">
-        <h1 className="text-center py-4 font-semibold " visible={pin}>
-          Horizon
-        </h1>
+        <h1 className="text-center py-4 font-semibold " style={{ visibility: pin ? 'visible' : 'hidden' }}>Horizon</h1>
         <div className="flex flex-col items-center space-y-10 my-10">
           <NavbarIcon
             icon={<FaHome size="24" />}
@@ -58,8 +57,8 @@ function Navbar() {
             visible={pin}
             href="/profile"
           />
-
-          <NavbarIcon icon={<ThemeSwitch size="24" />} visible={pin} />
+          {/* Note: Assuming ThemeSwitch is a component and not just an icon. If it's just an icon, it should be wrapped in a component or handled differently */}
+          <NavbarIcon icon={<ThemeSwitch />} visible={pin} />
         </div>
         <div className="flex items-center justify-center mb-10">
           <NavbarIcon
@@ -82,7 +81,7 @@ function NavbarIcon({ icon, visible, href }) {
       {icon}
     </Link>
   ) : (
-    <div lassName={iconClasses}>{icon}</div>
+    <div className={iconClasses}>{icon}</div> // Fixed typo here from 'lassName' to 'className'
   );
 }
 

@@ -113,6 +113,7 @@ input:checked + .slider:before {
   padding-right: 40px;
   margin-bottom: 20vh;
 }
+
 .navbar-hover {
   width: 20px;
   height: 100vh;
@@ -123,26 +124,35 @@ input:checked + .slider:before {
   left: 0;
 }
 
-.navbar-hover:hover {
+.navbar-hover:hover,
+.navbar-pinned  {
   width: 100px;
+  transition: width 0.3s ease-in-out;
+  opacity: 1;
 }
-.navbar-pinned {
-  width: 100px;
+
+/* Default state hidden for all icons and texts within navbar, except when navbar is pinned */
+.navbar-hover .navbar-icons-container, 
+.navbar-hover .navbar-icon, 
+.navbar-hover .navbar-icons-container > h1{
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
 }
-.navbar-icon-visible {
-  opacity: 1 !important;
+
+/* Hover and pinned state to show all icons and texts within navbar */
+.navbar-hover:hover .navbar-icons-container, 
+.navbar-hover:hover .navbar-icon,
+.navbar-hover:hover .navbar-icons-container > h1,
+.navbar-pinned .navbar-icon,
+.navbar-pinned .navbar-icons-container > h1 {
+  opacity: 1;
 }
 
 .navbar-icon {
-  opacity: 0;
-  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
   text-align: center;
   align-self: center;
   transform: scale(1);
-}
-
-.navbar-hover:hover .navbar-icon {
-  opacity: 1;
+  transition: transform 0.3s ease-in-out;
 }
 
 .navbar-icon:hover {
@@ -157,3 +167,11 @@ input:checked + .slider:before {
   height: 100%;
   padding: 10px 0;
 }
+
+.navbar-pinned .navbar-icons-container,
+.navbar-pinned .navbar-icon,
+.navbar-pinned .navbar-icons-container > h1 {
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out; /* Ensure content is visible */
+}
+
