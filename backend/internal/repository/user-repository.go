@@ -26,3 +26,9 @@ func (repo *UserRepository) FindByEmail(ctx context.Context, email string) (mode
     err := repo.db.FindOne(ctx, bson.M{"email": email}).Decode(&user)
     return user, err
 }
+
+func (repo *UserRepository) FindByJWT(ctx context.Context, token string) (model.User, error) {
+    var user model.User
+    err := repo.db.FindOne(ctx, bson.M{"AuthTok": token}).Decode(&user)
+    return user, err
+}

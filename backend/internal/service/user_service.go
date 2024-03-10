@@ -38,3 +38,11 @@ func (svc *UserService) AuthenticateUser(ctx context.Context, email, password st
 
 	return user, nil
 }
+
+func (svc *UserService) FindUser(ctx context.Context, token string) (model.User, error) {
+	user, err := svc.repo.FindByJWT(ctx, token)
+	if err != nil {
+		return model.User{}, err
+	}
+	return user, nil
+}

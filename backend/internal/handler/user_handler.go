@@ -3,10 +3,16 @@ package handler
 import (
 	"backend/internal/model"
 	"backend/internal/service"
+	"backend/.aws/aws_prof_imgs"
+
 	"encoding/json"
 	"net/http"
 	"time"
 	"github.com/dgrijalva/jwt-go"
+
+	
+	"context"
+	"fmt"
 )
 
 type UserHandler struct {
@@ -39,7 +45,7 @@ type Claims struct {
 	Email string `json:"email"`
 	jwt.StandardClaims
 }
-
+//fix hashing
 func generateJWTToken(user model.User) (string, error) {
 	expirationTime := time.Now().Add(1 * time.Hour)
 	claims := &Claims{
@@ -85,4 +91,35 @@ func (h *UserHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
 		"token": token,
 		"email": user.Email,
 	})
+}
+
+func (h *UserHandler) UploadProf(w http.ResponseWriter, r *http.Request) {
+
+	var Img struct{
+		AuthTok string
+		Img		[]byte
+	}
+
+	if err := json.NewDecoder(r.Body).Decode(&Img); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	user, err := h.svc.FindUser(r.Context(), string(Img.AuthTok))
+	if err != nil {
+		fmt.Println("Error finding user", err)
+		return
+	}
+
+	uploader, err := aws_prof_imgs.NewS3Uploader("horizonprofileimgs")
+	if err != nil {
+		fmt.Println("Error creating S3Uploader:", err)
+		return
+	}
+
+	err = uploader.UploadPicture(context.Background(), Img.Img, "", user.Username)
+	if err != nil {
+		fmt.Println("Error uploading picture:", err)
+		return
+	}
 }

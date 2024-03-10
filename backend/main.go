@@ -1,7 +1,7 @@
 package main
 
 import (
-	"backend/internal/handler"
+    "backend/internal/handler"
 	"backend/internal/repository"
 	"backend/internal/service"
 	"backend/pkg/db"
@@ -42,8 +42,9 @@ func main() {
     r.HandleFunc("/api/register", userHandler.RegisterUser).Methods("POST")
     fmt.Println("Main Registering user")
     r.HandleFunc("/api/login", userHandler.LoginUser).Methods("POST")
-
+    r.HandleFunc("/api/uploadProf", userHandler.UploadProf).Methods("POST")
     // Start the server with the CORS handler
     log.Println("Server is running at http://localhost:8000")
     log.Fatal(http.ListenAndServe(":8000", handler))
+    
 }
