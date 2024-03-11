@@ -45,6 +45,7 @@ const LoginForm = () => {
         throw new Error(data.message || "Failed to login");
       }
       localStorage.setItem("token", data.token);
+      
       router.push("/dashboard");
     } catch (err) {
       console.error("Login error:", err);

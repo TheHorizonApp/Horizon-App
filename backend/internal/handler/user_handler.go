@@ -10,7 +10,8 @@ import (
 	"time"
 	"github.com/dgrijalva/jwt-go"
 
-	
+	"crypto/sha256"
+	"encoding/hex"
 	"context"
 	"fmt"
 )
@@ -67,15 +68,18 @@ func generateJWTToken(user model.User) (string, error) {
 
 func (h *UserHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
 	var creds struct {
-		Email    string `json:"email"`
-		Password string `json:"password"`
+		Email   	 string `json:"email"`
+		Username	 string	`json:"username"`
+		Password 	 string `json:"password"`
 	}
+	print(creds.Email)
+	println(creds.Username)
 	if err := json.NewDecoder(r.Body).Decode(&creds); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	user, err := h.svc.AuthenticateUser(r.Context(), creds.Email, creds.Password)
+	user, err := h.svc.AuthenticateUser(r.Context(), creds.Email, creds.Username, creds.Password)
 	if err != nil {
 		http.Error(w, "Invalid credentials", http.StatusUnauthorized)
 		return
@@ -87,10 +91,30 @@ func (h *UserHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	tokHash := hashSHA256(token)
+	err = h.svc.UpdateUser(r.Context(),creds.Email, tokHash)
+	if err != nil{
+		fmt.Println(err)
+	}
+
 	json.NewEncoder(w).Encode(map[string]string{
 		"token": token,
 		"email": user.Email,
 	})
+}
+
+func hashSHA256(input string) string {
+	// Create a new SHA-256 hash
+	var hash = sha256.New()
+
+	// Write the input string to the hash
+	hash.Write([]byte(input))
+
+	// Sum the hash and convert it to a hexadecimal string
+	hashInBytes := hash.Sum(nil)
+	hashString := hex.EncodeToString(hashInBytes)
+
+	return hashString
 }
 
 func (h *UserHandler) UploadProf(w http.ResponseWriter, r *http.Request) {
@@ -105,11 +129,13 @@ func (h *UserHandler) UploadProf(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := h.svc.FindUser(r.Context(), string(Img.AuthTok))
+	tokHash := hashSHA256(Img.AuthTok)
+	user, err := h.svc.FindUser(r.Context(), string(tokHash))
 	if err != nil {
 		fmt.Println("Error finding user", err)
 		return
 	}
+
 
 	uploader, err := aws_prof_imgs.NewS3Uploader("horizonprofileimgs")
 	if err != nil {

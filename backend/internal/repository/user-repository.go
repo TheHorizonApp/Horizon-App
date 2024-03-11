@@ -27,8 +27,18 @@ func (repo *UserRepository) FindByEmail(ctx context.Context, email string) (mode
     return user, err
 }
 
+func (repo *UserRepository) FindByUserName(ctx context.Context, username string) (model.User, error) {
+    var user model.User
+    err := repo.db.FindOne(ctx, bson.M{"username": username}).Decode(&user)
+    return user, err
+}
+
+func (repo *UserRepository) Update(ctx context.Context, filter interface{}, update interface{}) (*mongo.UpdateResult, error) {
+    return repo.db.UpdateOne(ctx, filter, update)
+}
+
 func (repo *UserRepository) FindByJWT(ctx context.Context, token string) (model.User, error) {
     var user model.User
-    err := repo.db.FindOne(ctx, bson.M{"AuthTok": token}).Decode(&user)
+    err := repo.db.FindOne(ctx, bson.M{"token": token}).Decode(&user)
     return user, err
 }

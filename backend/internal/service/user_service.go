@@ -4,6 +4,9 @@ import (
 	"backend/internal/model"
 	"backend/internal/repository"
 	"context"
+	"fmt"
+
+	"go.mongodb.org/mongo-driver/bson"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -16,27 +19,43 @@ func NewUserService(repo *repository.UserRepository) *UserService {
 }
 
 func (svc *UserService) CreateUser(ctx context.Context, user model.User) error {
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
-	if err != nil {
-		return err
-	}
-	user.Password = string(hashedPassword)
-	_, err = svc.repo.Create(ctx, user)
-	return err
+    hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+    if err != nil {
+        return err
+    }
+    user.Password = string(hashedPassword)  // Issue: Convert byte slice to string
+    _, err = svc.repo.Create(ctx, user)
+    return err
 }
 
-func (svc *UserService) AuthenticateUser(ctx context.Context, email, password string) (model.User, error) {
-	user, err := svc.repo.FindByEmail(ctx, email)
-	if err != nil {
-		return model.User{}, err
+func (svc *UserService) AuthenticateUser(ctx context.Context, email, username, password string) (model.User, error) {
+	if username == ""{
+		user, err := svc.repo.FindByEmail(ctx, email)
+		if err != nil {
+			return model.User{}, err
+		}
+	
+		err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+		if err != nil {
+			return model.User{}, err // Password does not match
+		}
+	
+		return user, nil
+
+	} else{
+		user, err := svc.repo.FindByUserName(ctx, username)
+		if err != nil {
+			return model.User{}, err
+		}
+	
+		err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+		if err != nil {
+			return model.User{}, err // Password does not match
+		}
+	
+		return user, nil
 	}
 
-	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
-	if err != nil {
-		return model.User{}, err // Password does not match
-	}
-
-	return user, nil
 }
 
 func (svc *UserService) FindUser(ctx context.Context, token string) (model.User, error) {
@@ -45,4 +64,16 @@ func (svc *UserService) FindUser(ctx context.Context, token string) (model.User,
 		return model.User{}, err
 	}
 	return user, nil
+}
+
+func (svc *UserService) UpdateUser(ctx context.Context, email string, token string) error {
+	filter := bson.M{"email": email}
+	update := bson.M{"$set": bson.M{"token": token}}
+
+	result, err := svc.repo.Update(context.Background(), filter, update)
+		if err != nil {
+			fmt.Println(result)
+		return err
+		}
+	return nil
 }
