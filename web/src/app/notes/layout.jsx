@@ -1,4 +1,4 @@
-import SideBar from "@/components/SideBar";
+import SideBar from "@/app/notes/components/SideBar";
 
 export default function RootLayout({ children }) {
   return (
