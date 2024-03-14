@@ -1,24 +1,13 @@
 "use client";
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useRedirectIfLoggedIn } from "./auth";
 
 const LoginForm = () => {
+  useRedirectIfLoggedIn();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const router = useRouter();
-
-  const isLoggedIn = () => {
-    const token = localStorage.getItem("token");
-    return !!token;
-  };
-
-  useEffect(() => {
-    if (isLoggedIn()) {
-      router.push("/dashboard");
-    }
-  }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -59,15 +48,9 @@ const LoginForm = () => {
       onSubmit={handleSubmit}
       className="flex flex-col items-center justify-center space-y-5"
     >
-      <div className="flex w-[25vw] items-center justify-center p-3 bg-gray-900 rounded-lg cursor-pointer">
-        <span className="text-white">Continue with Google</span>
-      </div>
-      <div className="flex w-[25vw] items-center justify-center p-3 bg-gray-900 rounded-lg cursor-pointer">
-        <span className="text-white">Continue with Apple</span>
-      </div>
       <div>
-        <div className="border-t border-gray-300 my-4"></div>
-        <div className="w-[50vw]">
+        {/* <hr className="border-t border-gray-300 my-4" /> */}
+        <div className="">
           <label
             htmlFor="email"
             className="text-lg font-medium text-black dark:text-white p-2"

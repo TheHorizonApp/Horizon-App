@@ -1,8 +1,9 @@
 "use client";
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useRedirectIfLoggedIn } from "./auth";
 
 const RegisterForm = () => {
+  useRedirectIfLoggedIn();
   const [username, setUsername] = useState("");
   const [nickname, setNickname] = useState("");
   const [email, setEmail] = useState("");
@@ -10,19 +11,6 @@ const RegisterForm = () => {
   const [comPass, setComPass] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const router = useRouter();
-
-  const isLoggedIn = () => {
-    // TODO: Check if the user token is valid in backend
-    const token = localStorage.getItem("token");
-    return !!token;
-  };
-
-  useEffect(() => {
-    if (isLoggedIn()) {
-      router.push("/dashboard");
-    }
-  }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -60,8 +48,8 @@ const RegisterForm = () => {
     >
       <div className="w-full space-y-3">
         <div>
-          <div className="flex place-content-between gap-4">
-            <div>
+          <div className="md:no-flex lg:flex lg:place-content-between lg:gap-4">
+            <div className="mt-3">
               <label className="text-lg font-medium text-black dark:text-white p-2">
                 Username
               </label>
@@ -75,7 +63,7 @@ const RegisterForm = () => {
                 onChange={(e) => setUsername(e.target.value)}
               />
             </div>
-            <div>
+            <div className="mt-3">
               <label className="text-lg font-medium text-black dark:text-white p-2">
                 Nickname
               </label>
@@ -144,7 +132,7 @@ const RegisterForm = () => {
       <button
         type="submit"
         disabled={isLoading}
-        className="bg-black text-white dark:bg-white dark:text-black p-2 px-8 rounded-lg mt-4 text-lg"
+        className="bg-black text-white dark:bg-white dark:text-black p-2 px-8 rounded-lg m-4 text-lg"
       >
         {isLoading ? "Register" : "Register"}
       </button>
