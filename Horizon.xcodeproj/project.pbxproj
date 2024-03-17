@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D866C14B2BA7AC77005DBF89 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = D866C14A2BA7AC77005DBF89 /* Lottie */; };
 		D8D597422BA786840085F904 /* HorizonApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D597412BA786840085F904 /* HorizonApp.swift */; };
 		D8D597442BA786840085F904 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D597432BA786840085F904 /* ContentView.swift */; };
 		D8D597462BA786850085F904 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D8D597452BA786850085F904 /* Assets.xcassets */; };
@@ -58,6 +59,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D866C14B2BA7AC77005DBF89 /* Lottie in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +80,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		D866C1492BA7AC77005DBF89 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		D8D597352BA786840085F904 = {
 			isa = PBXGroup;
 			children = (
@@ -85,6 +94,7 @@
 				D8D597522BA786850085F904 /* HorizonTests */,
 				D8D5975C2BA786850085F904 /* HorizonUITests */,
 				D8D5973F2BA786840085F904 /* Products */,
+				D866C1492BA7AC77005DBF89 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -154,6 +164,9 @@
 			dependencies = (
 			);
 			name = Horizon;
+			packageProductDependencies = (
+				D866C14A2BA7AC77005DBF89 /* Lottie */,
+			);
 			productName = Horizon;
 			productReference = D8D5973E2BA786840085F904 /* Horizon.app */;
 			productType = "com.apple.product-type.application";
@@ -639,6 +652,14 @@
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		D866C14A2BA7AC77005DBF89 /* Lottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D866C1482BA797C9005DBF89 /* XCRemoteSwiftPackageReference "lottie-ios" */;
+			productName = Lottie;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = D8D597362BA786840085F904 /* Project object */;
 }
