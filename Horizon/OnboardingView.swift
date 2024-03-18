@@ -9,6 +9,20 @@ import Foundation
 import SwiftUI
 import Lottie
 import UIKit
+import AuthenticationServices
+
+struct SignInWithAppleButtonWrapper: UIViewRepresentable {
+    var colorScheme: ColorScheme
+    
+    func makeUIView(context: Context) -> ASAuthorizationAppleIDButton {
+        let style: ASAuthorizationAppleIDButton.Style = colorScheme == .dark ? .white : .black
+        return ASAuthorizationAppleIDButton(authorizationButtonType: .continue, authorizationButtonStyle: style)
+    }
+    
+    func updateUIView(_ uiView: ASAuthorizationAppleIDButton, context: Context) {
+    }
+}
+
 
 struct LottieView: UIViewRepresentable {
     var name: String
@@ -17,7 +31,6 @@ struct LottieView: UIViewRepresentable {
     func makeUIView(context: UIViewRepresentableContext<LottieView>) -> UIView {
         let view = UIView(frame: .zero)
         
-        // Create a new instance of LottieAnimationView here
         let animationView = LottieAnimationView()
         let animation = LottieAnimation.named(name)
         animationView.animation = animation
@@ -37,28 +50,50 @@ struct LottieView: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: UIView, context: UIViewRepresentableContext<LottieView>) {
-        // This method can be used to update the animation view if needed
     }
 }
-
-// Your existing OnboardingView
 struct OnboardingView: View {
+    @Environment(\.colorScheme) var colorScheme
+    
     var body: some View {
         VStack {
-            // Example of adding a Lottie animation to your OnboardingView
             LottieView(name: "onboarding", loopMode: .loop)
-                .frame(width: 300, height: 300) // Adjust the size as needed
+                .frame(width: 400, height: 400)
 
-            Text("Welcome to Horizon")
-            NavigationLink(destination: LoginView()) {
-                Text("Get Started")
+            Text("Stay Organized")
+                .fontWeight(.thin)
+                .multilineTextAlignment(.center).font(.system(size: 32))
+            
+            Text("with Horizon.")
+                .fontWeight(.bold)
+                .multilineTextAlignment(.center).font(.system(size: 36))
+                .padding(.bottom, 30)
+            
+            Button(action: {
+                // Action for creating an account
+            }) {
+                Text("Create an Account")
                     .frame(minWidth: 0, maxWidth: .infinity)
                     .padding()
-                    .foregroundColor(.white)
-                    .background(Color.blue)
-                    .cornerRadius(40)
+                    .foregroundColor(colorScheme == .dark ? .black : .white)
+                    .background(colorScheme == .dark ? .white : .black)
+                    .cornerRadius(10)
+                    .fontWeight(.medium)
             }
             .padding(.horizontal)
+            
+            SignInWithAppleButtonWrapper(colorScheme: colorScheme)
+                .frame(height: 44)
+                .padding(.horizontal)
+                .cornerRadius(10)
+                .padding(.top, 5)
+            
+            NavigationLink(destination: LoginView()) {
+                Text("Already have an account? Login here.")
+                    .foregroundColor(colorScheme == .dark ? .white : .black).font(.system(size: 12))
+            }
+            .padding(.top, 5)
         }
+        .padding()
     }
 }

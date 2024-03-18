@@ -7,7 +7,6 @@
 
 import Foundation
 import SwiftUI
-import Lottie
 
 struct RegisterView: View {
     @State private var username = ""
