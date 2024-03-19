@@ -69,9 +69,9 @@ func (svc *UserService) FindUser(ctx context.Context, token string) (model.User,
 	return user, nil
 }
 
-func (svc *UserService) UpdateUser(ctx context.Context,filter string, email string, field string, token string) error {
-	filt := bson.M{filter: email}
-	update := bson.M{"$set": bson.M{field: token}}
+func (svc *UserService) UpdateUser(ctx context.Context,filterField string, filterVal string, updateField string, updateVal string) error {
+	filt := bson.M{filterField: filterVal}
+	update := bson.M{"$set": bson.M{updateField: updateVal}}
 
 	result, err := svc.repo.Update(context.Background(), filt, update)
 		if err != nil {
