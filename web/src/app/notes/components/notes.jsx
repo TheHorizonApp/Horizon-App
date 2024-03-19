@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+
 
 const notes = () => {
   const router = useRouter();
@@ -26,10 +28,11 @@ const notes = () => {
     router.push(`/notes/personal/${noteId}`);
   }
 
-
   return (
     <>
-      <h1 className="text-3xl font-light text-[#767676] my-2 cursor-default">Notes</h1>
+      <h1 className="text-3xl font-light text-[#767676] my-2 cursor-default">
+        <Link href="/notes/personal">Notes</Link>
+        </h1>
       <div className="flex-1 flex flex-col m-3">
         <div className="overflow-y-auto max-h-[calc(50vh-120px)] space-y-4">
           {notes.length > 0 ? (

@@ -21,6 +21,7 @@ const RegisterForm = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          oath: false,
           username: username,
           nickname: nickname,
           email: email,

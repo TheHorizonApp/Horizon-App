@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+
 const groups = () => {
   const router = useRouter();
   const [groups, setGroups] = useState([
@@ -27,7 +28,9 @@ const groups = () => {
 
   return (
     <>
-      <h1 className="text-3xl font-light text-[#767676] my-2 cursor-default">Groups</h1>
+      <h1 className="text-3xl font-light text-[#767676] my-2 cursor-default">
+        Groups       
+        </h1>
       <div className="flex-1 flex flex-col">
         <div className="overflow-y-auto max-h-[calc(50vh-120px)] space-y-2">
           {groups.length > 0 ? (

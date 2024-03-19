@@ -192,18 +192,7 @@ input:checked + .slider:before {
 .hover-fill:hover::before {
   opacity: 1;
 }
-
-.todo-enter {
+.todo-exiting {
+  transition: opacity 0.5s ease-out;
   opacity: 0;
-}
-.todo-enter-active {
-  opacity: 1;
-  transition: opacity 500ms ease-in;
-}
-.todo-exit {
-  opacity: 1;
-}
-.todo-exit-active {
-  opacity: 0;
-  transition: opacity 500ms ease-in;
 }
