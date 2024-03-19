@@ -1,6 +1,6 @@
 package model
 // Tag represents a calendar tag with a name and associated color.
-type Tag struct {
+type Task struct {
 	Name  	string `json:"name" bson:"name"`
-	Color 	string `json:"color" bson:"color"`
+	Tag 	string `json:"color" bson:"color"`
 }

@@ -3,7 +3,7 @@ package handler
 import (
 	"backend/internal/model"
 	"backend/internal/service"
-	"backend/.aws/aws_prof_imgs"
+	"backend/aws/aws_prof_imgs"
 
 	"encoding/json"
 	"net/http"
@@ -27,15 +27,34 @@ func NewUserHandler(svc *service.UserService) *UserHandler {
 func (h *UserHandler) RegisterUser(w http.ResponseWriter, r *http.Request) {
 	
 	var user model.User
+	var reg struct {
+		Email   	 string `json:"email"`
+		Username	 string	`json:"username"`
+		Img 	 	 []byte `json:"image"`
+		OAuth		 bool	`json:"oauth"`
+		Password	 string	`json:"password"`
+	}
 
-	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&reg); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+	user.Email = reg.Email
+	user.Username = reg.Username
+	user.Password = reg.Password
+	user.OAuth = reg.OAuth
+	print(user.OAuth)
 
-	if err := h.svc.CreateUser(r.Context(), user); err != nil {
+	fmt.Println(user.Password)
+	if err := h.svc.CreateUser(r.Context(), user, reg.OAuth); err != nil {
 		http.Error(w, "Failed to create user", http.StatusInternalServerError)
 		return
+	}
+	if reg.OAuth{
+		if err := awsUpload(reg.Img, reg.Username); err != nil {
+			http.Error(w, "Failed to upload image", http.StatusInternalServerError)
+			return
+		}
 	}
 
 	w.WriteHeader(http.StatusCreated)
@@ -46,7 +65,7 @@ type Claims struct {
 	Email string `json:"email"`
 	jwt.StandardClaims
 }
-//fix hashing
+
 func generateJWTToken(user model.User) (string, error) {
 	expirationTime := time.Now().Add(1 * time.Hour)
 	claims := &Claims{
@@ -72,8 +91,7 @@ func (h *UserHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
 		Username	 string	`json:"username"`
 		Password 	 string `json:"password"`
 	}
-	print(creds.Email)
-	println(creds.Username)
+
 	if err := json.NewDecoder(r.Body).Decode(&creds); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -92,7 +110,7 @@ func (h *UserHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	tokHash := hashSHA256(token)
-	err = h.svc.UpdateUser(r.Context(),creds.Email, tokHash)
+	err = h.svc.UpdateUser(r.Context(),"email", creds.Email, "token", tokHash)
 	if err != nil{
 		fmt.Println(err)
 	}
@@ -104,13 +122,10 @@ func (h *UserHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func hashSHA256(input string) string {
-	// Create a new SHA-256 hash
 	var hash = sha256.New()
 
-	// Write the input string to the hash
 	hash.Write([]byte(input))
 
-	// Sum the hash and convert it to a hexadecimal string
 	hashInBytes := hash.Sum(nil)
 	hashString := hex.EncodeToString(hashInBytes)
 
@@ -136,16 +151,24 @@ func (h *UserHandler) UploadProf(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	err = awsUpload(Img.Img, user.Username)
+	if err != nil {
+		fmt.Println("sumting wong")
+	}
+}
 
+func awsUpload(image []byte, username string) error{
 	uploader, err := aws_prof_imgs.NewS3Uploader("horizonprofileimgs")
 	if err != nil {
 		fmt.Println("Error creating S3Uploader:", err)
-		return
+		return err
 	}
 
-	err = uploader.UploadPicture(context.Background(), Img.Img, "", user.Username)
+	err = uploader.UploadPicture(context.Background(), image, "", username)
 	if err != nil {
 		fmt.Println("Error uploading picture:", err)
-		return
+		return err
 	}
+
+	return nil
 }

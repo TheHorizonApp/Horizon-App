@@ -12,5 +12,6 @@ type User struct {
     Personal 	[]string   `json:"personal" bson:"personal"`
     Calender 	string     `json:"calender" bson:"calender"`
     Deadlines 	[]string   `json:"deadlines" bson:"deadlines"`
-    Token 		string   	`json:"token" bson:"token"`
+    Token 		string     `json:"token" bson:"token"`
+	OAuth 		bool 	   `json: "oauth" bson: "oauth"`
 }

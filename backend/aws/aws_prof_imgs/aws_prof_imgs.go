@@ -44,9 +44,7 @@ func loadCredentials() (*Credentials, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to decode creds.json: %v", err)
 	}
-	println(creds.AWS_SECRET_ACCESS_KEY)
-	println(creds.AWS_ACCESS_KEY_ID)
-	println(creds.AWS_REGION)
+
 	return creds, nil
 }
 // NewS3Uploader creates a new S3Uploader instance.

@@ -18,13 +18,16 @@ func NewUserService(repo *repository.UserRepository) *UserService {
 	return &UserService{repo: repo}
 }
 
-func (svc *UserService) CreateUser(ctx context.Context, user model.User) error {
-    hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
-    if err != nil {
-        return err
-    }
-    user.Password = string(hashedPassword)  // Issue: Convert byte slice to string
-    _, err = svc.repo.Create(ctx, user)
+func (svc *UserService) CreateUser(ctx context.Context, user model.User, isOauth bool) error {
+	if !isOauth {
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+		if err != nil {
+			return err
+		}
+		user.Password = string(hashedPassword)  // Issue: Convert byte slice to string
+	}
+	println(user.Password)
+    _, err := svc.repo.Create(ctx, user)
     return err
 }
 
@@ -66,11 +69,11 @@ func (svc *UserService) FindUser(ctx context.Context, token string) (model.User,
 	return user, nil
 }
 
-func (svc *UserService) UpdateUser(ctx context.Context, email string, token string) error {
-	filter := bson.M{"email": email}
-	update := bson.M{"$set": bson.M{"token": token}}
+func (svc *UserService) UpdateUser(ctx context.Context,filter string, email string, field string, token string) error {
+	filt := bson.M{filter: email}
+	update := bson.M{"$set": bson.M{field: token}}
 
-	result, err := svc.repo.Update(context.Background(), filter, update)
+	result, err := svc.repo.Update(context.Background(), filt, update)
 		if err != nil {
 			fmt.Println(result)
 		return err
