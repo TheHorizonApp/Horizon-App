@@ -15,7 +15,7 @@ const page = () => {
 
   return (
     <div className="flex h-screen">
-      <div className="flex-grow m-4">
+      <div className="flex-grow m-4 mr-0">
         {/* Main content goes here */}
         <h1 className={`text-3xl font-medium ${colorClass}`}>
           {greeting}{" "}
@@ -24,7 +24,7 @@ const page = () => {
           </span>
         </h1>
         {/* TODO: fix where that  */}
-        <div className="flex flex-col space-y-4 p-4 h-[93vh]"> 
+        <div className="flex flex-col space-y-4 pt-4 h-[93vh]">
           <div className="border border-gray-500 rounded-xl p-4 h-full flex-grow">
             Calendar
           </div>
@@ -39,8 +39,8 @@ const page = () => {
         </div>
       </div>
       {/* this will be hidden if it gets to small */}
-      <div className="w-1/5 border-l border-slate-700 sm: hidden md:block"> 
-          <ToDo />
+      <div className="w-3/12 border-slate-700 sm: hidden md:block">
+        <ToDo />
       </div>
     </div>
   );
