@@ -20,13 +20,56 @@ function useOutsideClick(ref, onOutsideClick) {
 
 const ToDoList = () => {
   const [showInput, setShowInput] = useState(false);
-  const wrapperRef = useRef(null); // Create a ref for the wrapper div
-  useOutsideClick(wrapperRef, () => setShowInput(false)); // Use the hook
+  const wrapperRef = useRef(null);
+  useOutsideClick(wrapperRef, () => setShowInput(false));
 
   const [toDos, setToDos] = useState([]);
   const [newTodo, setNewTodo] = useState("");
   const [selectedColor, setSelectedColor] = useState("bg-blue-500"); // Default to Blue
   const [isOpen, setIsOpen] = useState(false); // State to manage dropdown visibility
+
+  const [editingId, setEditingId] = useState(null);
+  const handleEditClick = (id) => {
+    setEditingId(id);
+  };  
+
+  const handleTodoChange = (event, id) => {
+    const updatedTodos = toDos.map((todo) =>
+      todo.id === id ? { ...todo, todo: event.target.value } : todo
+    );
+    setToDos(updatedTodos);
+  };
+  const handleKeyPress = (event, id) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault(); 
+      handleUpdateTodo(id);
+    }
+  };
+
+  const handleUpdateTodo = async (id) => {
+    setEditingId(null);
+    const todoToUpdate = toDos.find((todo) => todo.id === id);
+    if (todoToUpdate) {
+      try {
+        const response = await fetch(`http:localhost:8000/api/todo/${id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id,
+            todo: todoToUpdate.todo,
+            color: todoToUpdate.color,
+          }),
+        });
+        const updatedTodo = await response.json();
+        setToDos((prevToDos) =>
+          prevToDos.map((todo) => (todo.id === id ? updatedTodo : todo))
+        );
+      } catch (error) {
+        console.error("Failed to update todo:", error);
+      }
+    }
+  };
+
   const colors = [
     { value: "bg-blue-500", label: "Blue", color: "#4299E1" },
     { value: "bg-red-500", label: "Red", color: "#F56565" },
@@ -37,13 +80,11 @@ const ToDoList = () => {
     { value: "bg-pink-500", label: "Pink", color: "#ED64A6" },
   ];
 
-  // Function to toggle the dropdown menu
   const toggleDropdown = () => setIsOpen(!isOpen);
 
-  // Function to handle selecting a color
   const handleSelectColor = (value) => {
     setSelectedColor(value);
-    setIsOpen(false); // Close the dropdown after selection
+    setIsOpen(false);
   };
 
   useEffect(() => {
@@ -52,19 +93,19 @@ const ToDoList = () => {
 
   // const fetchTodos = async () => {
   //   try {
-  //     const response = await fetch("https://dummyjson.com/todos"); //change to our API endpoint
+  //     const response = await fetch("http://localhost:8000/api/todos");
   //     const jsonData = await response.json();
   //     setToDos(jsonData.todos);
   //   } catch (error) {
   //     console.error("Error fetching data:", error);
   //   }
   // };
+  //testing only
   const fetchTodos = async () => {
     try {
       const response = await fetch("https://dummyjson.com/todos"); // Change this to your actual API endpoint
       const jsonData = await response.json();
 
-      // Define an array of Tailwind CSS classes for background colors
       const colorClasses = [
         "bg-blue-500",
         "bg-red-500",
@@ -91,14 +132,18 @@ const ToDoList = () => {
   const addToDo = async () => {
     const trimmedTodo = newTodo.trim();
     if (!trimmedTodo) return;
+
+    const todoData = { todo: newTodo, color: selectedColor };
     try {
-      const response = await fetch("http://localhost:8000/todos/add", {
+      const response = await fetch("http://localhost:8000/api/todos/add", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ todo: newTodo, color: selectedColor }),
+        body: JSON.stringify(todoData),
       });
+      if (!response.ok) throw new Error("Network response was not ok.");
+
       const jsonData = await response.json();
-      setToDos([...toDos, jsonData]);
+      setToDos((prevToDos) => [...prevToDos, jsonData]);
       setNewTodo("");
       setShowInput(false);
     } catch (error) {
@@ -200,7 +245,7 @@ const ToDoList = () => {
                 className="flex items-center justify-between"
               >
                 <span
-                  className="p-2 ml-3 rounded-full"
+                  className={`p-2 ml-3 rounded-full`}
                   style={{
                     backgroundColor: colors.find(
                       (color) => color.value === selectedColor
@@ -232,7 +277,7 @@ const ToDoList = () => {
           <div
             {...provided.droppableProps}
             ref={provided.innerRef}
-            className="max-h-[89.5vh] overflow-y-auto ml-5 mr-2 pr-3"
+            className="max-h-[89vh] overflow-y-auto ml-5 mr-2 pr-3"
           >
             {toDos.map((todo, index) => (
               <Draggable
@@ -245,11 +290,11 @@ const ToDoList = () => {
                     ref={provided.innerRef}
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
-                    className={`flex relative mb-2 ${
+                    className={`flex relative mb-2 border rounded-md ${
                       todo.deleting ? "todo-exiting" : ""
                     }`}
                   >
-                    <div className="flex items-center mx-3 py-2">
+                    <div className="flex items-center mx-3 py-2 w-full">
                       <button
                         className="border border-[#8A8A8A] p-[6px] rounded-full mr-2 cursor-pointer relative hover-fill"
                         onClick={(event) => {
@@ -257,12 +302,28 @@ const ToDoList = () => {
                           deleteToDo(todo.id);
                         }}
                       />
-                      <div className="text-black dark:text-white text-sm font-normal">
-                        {todo.todo}
-                      </div>
+                      {editingId === todo.id ? (
+                        <textarea
+                        className="bg-white dark:bg-black rounded-[5px] text-black dark:text-white text-sm p-1 w-full"
+                        style={{ minHeight: '38px', resize: 'none' }} 
+                        value={todo.todo}
+                        onChange={(e) => handleTodoChange(e, todo.id)}
+                        onBlur={() => handleUpdateTodo(todo.id)}
+                        onKeyPress={(e) => handleKeyPress(e, todo.id)}
+                        autoFocus
+                      />
+                      
+                      ) : (
+                        <div
+                          className="text-black dark:text-white text-sm font-normal cursor-text"
+                          onDoubleClick={() => handleEditClick(todo.id)}
+                        >
+                          {todo.todo}
+                        </div>
+                      )}
                     </div>
                     <div
-                      className={`absolute inset-y-0 right-0 w-[4px] rounded-r-xl ${todo.color}`}
+                      className={`absolute inset-y-0 right-0 w-[5px] rounded-r-xl ${todo.color}`}
                     />
                   </div>
                 )}
