@@ -15,13 +15,14 @@ import "./Navbar.css";
 
 function Navbar() {
   const pathname = usePathname();
-  const shouldHideNavbar = pathname === "/" || pathname === "/login" || pathname === "/register";
+  const shouldHideNavbar =
+    pathname === "/" || pathname === "/login" || pathname === "/register";
   const pin = pathname === "/dashboard";
 
   if (shouldHideNavbar) {
     return null;
   }
-  
+
   const navbarClasses = `navbar-hover bg-white dark:bg-black ${
     pin ? "navbar-pinned" : ""
   }`;
@@ -29,7 +30,7 @@ function Navbar() {
   return (
     <div className={navbarClasses}>
       <div className="navbar-icons-container">
-        <h1 className="text-center py-4 font-semibold " >Horizon</h1>
+        <h1 className="text-center py-4 font-semibold ">Horizon</h1>
         <div className="flex flex-col items-center space-y-10 my-10">
           <NavbarIcon
             icon={<FaHome size="24" />}

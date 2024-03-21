@@ -179,8 +179,8 @@ input:checked + .slider:before {
 .hover-fill::before {
   content: "";
   position: absolute;
-  width: 80%; 
-  height: 80%; 
+  width: 80%;
+  height: 80%;
   background-color: #00bfff;
   border-radius: 50%;
   top: 50%;

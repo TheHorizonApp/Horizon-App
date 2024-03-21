@@ -1,6 +1,9 @@
+"use client";
+import React, { useState, useEffect, Suspense } from "react";
 import { formatDistanceToNowStrict, parseISO } from "date-fns";
 import Image from "next/image";
 import thumbTack from "@/assets/thumbTack.svg";
+import NotesLoadingSkeleton from "./NotesLoadingSkeleton";
 
 const getTimeAgo = (dateString) => {
   const date = parseISO(dateString);
@@ -34,35 +37,72 @@ const NoteBox = ({ note }) => {
 const page = ({ params }) => {
   const colors = "bg-sky-400";
 
-  const notes = [
-    {
-      id: 1,
-      title: "First Note",
-      body: "This is the body of the first note",
-      createdAt: "2022-01-01T12:00:00",
-      updatedAt: "2024-01-04T12:00:00",
-      tag: "bg-sky-400",
-      pinned: true,
-    },
-    {
-      id: 2,
-      title: "Second Note",
-      body: "This is the body of the second note",
-      createdAt: "2022-01-01T12:00:00",
-      updatedAt: "2022-01-01T12:00:00",
-      tag: "bg-indigo-400",
-      pinned: false,
-    },
-    {
-      id: 3,
-      title: "Third Note",
-      body: "This is the body of the third note",
-      createdAt: "2022-01-01T12:00:00",
-      updatedAt: "2022-01-01T12:00:00",
-      tag: "bg-red-400",
-      pinned: true,
-    },
-  ];
+  //! -------------------------------------------------------------------------------------------------------------------
+  // ! REMOVE FOR BACKEND DATA
+  // const notes = [
+  //   {
+  //     id: 1,
+  //     title:
+  //       "First Note First Note First Note First Note First Note First Note First Note First Note",
+  //     body: "This is the body of the first note",
+  //     createdAt: "2022-01-01T12:00:00",
+  //     updatedAt: "2024-01-04T12:00:00",
+  //     tag: "bg-sky-400",
+  //     pinned: true,
+  //   },
+  //   {
+  //     id: 2,
+  //     title: "Second Note",
+  //     body: "This is the body of the second note",
+  //     createdAt: "2022-01-01T12:00:00",
+  //     updatedAt: "2022-01-01T12:00:00",
+  //     tag: "bg-indigo-400",
+  //     pinned: false,
+  //   },
+  //   {
+  //     id: 3,
+  //     title: "Third Note",
+  //     body: "This is the body of the third note. Lorem ipsum dolor sit amet consectetur adipisicing elit?",
+  //     createdAt: "2022-01-01T12:00:00",
+  //     updatedAt: "2022-01-01T12:00:00",
+  //     tag: "bg-red-400",
+  //     pinned: true,
+  //   },
+  // ];
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     await new Promise((resolve) => setTimeout(resolve, 500));
+  //     setLoading(false);
+  //   };
+
+  //   fetchData();
+  // }, []);
+  // const [loading, setLoading] = useState(true);
+
+  // ! -------------------------------------------------------------------------------------------------------------------
+  const [notes, setNotes] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`https://localhost:8080/api/notes/${id}`);
+        if (response.ok) {
+          const data = await response.json();
+          setNotes(data);
+        } else {
+          console.log("Error fetching data:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        // await new Promise((resolve) => setTimeout(resolve, 3000));
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <div className="pl-/1/5 p-10 bg-white dark:bg-black min-h-screen">
@@ -73,10 +113,21 @@ const page = ({ params }) => {
         </div>
         <div className="text-md">Recently edited</div>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 pt-10">
-        {notes.map((note) => (
-          <NoteBox key={note.id} note={note} />
-        ))}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 pt-10">
+        <Suspense fallback={<NotesLoadingSkeleton />}>
+          {loading
+            ? notes.map((note, index) => (
+                <div key={note.id}>
+                  <NotesLoadingSkeleton
+                    title={note.title}
+                    body={note.body}
+                    date={note.updatedAt}
+                    delay={index}
+                  />
+                </div>
+              ))
+            : notes.map((note) => <NoteBox key={note.id} note={note} />)}
+        </Suspense>
       </div>
     </div>
   );

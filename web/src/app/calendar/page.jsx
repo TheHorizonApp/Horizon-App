@@ -1,10 +1,5 @@
-
 const page = () => {
-  return (
-    <div>
-      Calendar :/
-    </div>
-  )
-}
+  return <div>Calendar :/</div>;
+};
 
-export default page
+export default page;
