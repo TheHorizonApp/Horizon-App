@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -13,6 +13,15 @@ const notes = () => {
     { id: "2", title: "Note Two", date: "02/02/24", tag: "bg-sky-400" },
     { id: "1", title: "Note One", date: "01/01/24", tag: "bg-red-400" },
   ]);
+
+  // const [notes, setNotes] = useState([]);
+
+  useEffect(() => {
+    fetch('https://.../personal/notes')
+      .then((res) => res.json())
+      .then(setNotes);
+  }, []);
+
   const handleAddDocumentClick = () => {
     //TODO: Backend call to create a new note
     //Should add the new note ID, title, date to the DB and returns all the info to the frontend

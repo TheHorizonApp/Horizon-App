@@ -19,19 +19,21 @@ function useOutsideClick(ref, onOutsideClick) {
 }
 
 const ToDoList = () => {
+  // await new Promise((resolve) => setTimeout(resolve, 3000));
+
   const [showInput, setShowInput] = useState(false);
   const wrapperRef = useRef(null);
   useOutsideClick(wrapperRef, () => setShowInput(false));
 
   const [toDos, setToDos] = useState([]);
   const [newTodo, setNewTodo] = useState("");
-  const [selectedColor, setSelectedColor] = useState("bg-blue-500"); // Default to Blue
-  const [isOpen, setIsOpen] = useState(false); // State to manage dropdown visibility
+  const [selectedColor, setSelectedColor] = useState("bg-blue-500"); //Default
+  const [isOpen, setIsOpen] = useState(false);
 
   const [editingId, setEditingId] = useState(null);
   const handleEditClick = (id) => {
     setEditingId(id);
-  };  
+  };
 
   const handleTodoChange = (event, id) => {
     const updatedTodos = toDos.map((todo) =>
@@ -41,7 +43,7 @@ const ToDoList = () => {
   };
   const handleKeyPress = (event, id) => {
     if (event.key === "Enter" && !event.shiftKey) {
-      event.preventDefault(); 
+      event.preventDefault();
       handleUpdateTodo(id);
     }
   };
@@ -71,13 +73,13 @@ const ToDoList = () => {
   };
 
   const colors = [
-    { value: "bg-blue-500", label: "Blue", color: "#4299E1" },
     { value: "bg-red-500", label: "Red", color: "#F56565" },
-    { value: "bg-gray-500", label: "Gray", color: "#A0AEC0" },
-    { value: "bg-purple-500", label: "Purple", color: "#9F7AEA" },
-    { value: "bg-green-500", label: "Green", color: "#48BB78" },
     { value: "bg-yellow-500", label: "Yellow", color: "#ECC94B" },
+    { value: "bg-green-500", label: "Green", color: "#48BB78" },
+    { value: "bg-blue-500", label: "Blue", color: "#4299E1" },
+    { value: "bg-purple-500", label: "Purple", color: "#9F7AEA" },
     { value: "bg-pink-500", label: "Pink", color: "#ED64A6" },
+    { value: "bg-gray-500", label: "Gray", color: "#A0AEC0" },
   ];
 
   const toggleDropdown = () => setIsOpen(!isOpen);
@@ -146,6 +148,7 @@ const ToDoList = () => {
       setToDos((prevToDos) => [...prevToDos, jsonData]);
       setNewTodo("");
       setShowInput(false);
+      setIsOpen(false);
     } catch (error) {
       console.error("Error adding todo:", error);
     }
@@ -212,7 +215,7 @@ const ToDoList = () => {
     <DragDropContext onDragEnd={onDragEnd}>
       <div className="mt-8 mx-6 flex flex-col">
         <div className="flex justify-between mx-2 ">
-          <div className="font-bold pb-2">
+          <div className="font-bold pb-2 cursor-default">
             To-Do's ({toDos.length ? toDos.length : "0"})
           </div>
           <button
@@ -224,17 +227,22 @@ const ToDoList = () => {
         </div>
 
         {showInput && (
-          <div className="flex items-center mx-2 pt-3 py-2 " ref={wrapperRef}>
-            <div className="border border-[#8A8A8A] p-[6px] rounded-full mr-2 cursor-pointer relative " />
+          <div
+            className="flex items-center mx-2 pt-3 py-2 w-full"
+            ref={wrapperRef}
+          >
+            <div className="border border-[#8A8A8A] p-[6px] rounded-full mr-1 cursor-pointer relative" />
             <input
               type="text"
-              className="bg-white border dark:bg-black rounded-[5px] w-full text-white text-sm p-1"
+              placeholder={toDos.length ? toDos[0].todo : "New Task"}
+              className="bg-white dark:bg-[#0E0E0E] rounded-[5px] w-full text-black dark:text-white text-sm p-1 custom-placeholder focus:outline-none focus:ring-0 focus:none"
               value={newTodo}
               onChange={(e) => setNewTodo(e.target.value)}
               onKeyPress={(e) => {
                 if (e.key === "Enter") {
                   addToDo();
-                  setShowInput(true); // Hide the input after adding the todo
+                  setShowInput(false);
+                  setIsOpen(false);
                 }
               }}
               autoFocus
@@ -252,10 +260,9 @@ const ToDoList = () => {
                     )?.color,
                   }}
                 ></span>
-                <button className="ml-2">▼</button>
               </div>
               {isOpen && (
-                <div className="absolute  bg-white dark:bg-black left-0 mr-3 rounded-md z-10">
+                <div className="absolute bg-white dark:bg-black left-0 mr-3 rounded-md z-10">
                   <div className="p-2">
                     {colors.map((color) => (
                       <div
@@ -290,7 +297,7 @@ const ToDoList = () => {
                     ref={provided.innerRef}
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
-                    className={`flex relative mb-2 border rounded-md ${
+                    className={`flex relative mb-2 rounded-md ${
                       todo.deleting ? "todo-exiting" : ""
                     }`}
                   >
@@ -304,18 +311,17 @@ const ToDoList = () => {
                       />
                       {editingId === todo.id ? (
                         <textarea
-                        className="bg-white dark:bg-black rounded-[5px] text-black dark:text-white text-sm p-1 w-full"
-                        style={{ minHeight: '38px', resize: 'none' }} 
-                        value={todo.todo}
-                        onChange={(e) => handleTodoChange(e, todo.id)}
-                        onBlur={() => handleUpdateTodo(todo.id)}
-                        onKeyPress={(e) => handleKeyPress(e, todo.id)}
-                        autoFocus
-                      />
-                      
+                          className="bg-white dark:bg-black rounded-[5px] text-black dark:text-white text-sm p-1 w-full"
+                          style={{ minHeight: "38px", resize: "none" }}
+                          value={todo.todo}
+                          onChange={(e) => handleTodoChange(e, todo.id)}
+                          onBlur={() => handleUpdateTodo(todo.id)}
+                          onKeyPress={(e) => handleKeyPress(e, todo.id)}
+                          autoFocus
+                        />
                       ) : (
                         <div
-                          className="text-black dark:text-white text-sm font-normal cursor-text"
+                          className="text-black dark:text-white text-sm font-light cursor-text"
                           onDoubleClick={() => handleEditClick(todo.id)}
                         >
                           {todo.todo}

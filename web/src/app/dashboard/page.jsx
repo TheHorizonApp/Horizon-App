@@ -1,4 +1,6 @@
 import ToDo from "@/components/ToDo";
+import { Suspense } from "react";
+import loadingToDos from "./loading";
 
 const page = () => {
   const name = "John Doe";
@@ -40,7 +42,9 @@ const page = () => {
       </div>
       {/* this will be hidden if it gets to small */}
       <div className="w-3/12 border-slate-700 sm: hidden md:block">
-        <ToDo />
+        <Suspense fallback={<loadingToDos />}>
+          <ToDo />
+        </Suspense>
       </div>
     </div>
   );

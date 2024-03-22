@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-
 
 const groups = () => {
   const router = useRouter();
@@ -10,6 +9,14 @@ const groups = () => {
     { id: "1", title: "Group One", date: "01/01/24", tag: "bg-red-400" },
   ]);
   // fetch should set the Notes into a list of map of notes with nodeID, title, date
+
+  // const [groups, setGroups] = useState([]);
+
+  useEffect(() => {
+    fetch('https://.../groups')
+    .then((res) => res.json())
+    .then(setGroups);
+  }, []);
 
   const handleAddGroupClick = () => {
     //TODO: Backend call to create a Group note
@@ -24,13 +31,13 @@ const groups = () => {
 
   const handleGroupClick = (groupId) => {
     router.push(`/notes/${groupId}`);
-  }
+  };
 
   return (
     <>
       <h1 className="text-3xl font-light text-[#767676] my-2 cursor-default">
-        Groups       
-        </h1>
+        Groups
+      </h1>
       <div className="flex-1 flex flex-col">
         <div className="overflow-y-auto max-h-[calc(50vh-120px)] space-y-2">
           {groups.length > 0 ? (

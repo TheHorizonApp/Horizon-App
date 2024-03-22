@@ -179,8 +179,8 @@ input:checked + .slider:before {
 .hover-fill::before {
   content: "";
   position: absolute;
-  width: 80%; 
-  height: 80%; 
+  width: 80%;
+  height: 80%;
   background-color: #00bfff;
   border-radius: 50%;
   top: 50%;
@@ -196,3 +196,18 @@ input:checked + .slider:before {
   transition: opacity 0.5s ease-out;
   opacity: 0;
 }
+
+.custom-placeholder::placeholder {
+  font-weight: 300;
+  /* Apply px-1 equivalent padding to the placeholder text */
+}
+
+input::selection {
+  background: transparent;
+}
+input:focus {
+  outline: none;
+  /* Consider adding an alternative focus style for accessibility */
+  box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.5); /* Example focus style */
+}
+
