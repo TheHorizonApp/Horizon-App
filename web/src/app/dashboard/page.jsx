@@ -19,7 +19,7 @@ const page = () => {
     <div className="flex h-screen">
       <div className="flex-grow m-4 mr-0">
         {/* Main content goes here */}
-        <h1 className={`text-xl font text-[#4C4C4C]`}>
+        <h1 className={`text-xl font text-[#4C4C4C] select-none`}>
           {greeting}{" "}
           <span className="drop-shadow-lg text-black dark:text-white">
             {name}!

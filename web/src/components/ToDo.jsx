@@ -215,7 +215,7 @@ const ToDoList = () => {
     <DragDropContext onDragEnd={onDragEnd}>
       <div className="mt-8 mx-6 flex flex-col">
         <div className="flex justify-between mx-2 ">
-          <div className="font-bold pb-2 cursor-default">
+          <div className="font-bold pb-2 cursor-default select-none	">
             To-Do's ({toDos.length ? toDos.length : "0"})
           </div>
           <button
